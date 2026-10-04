@@ -16,7 +16,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     python3-pip \
     libatomic1 \
     libicu-dev \
-    default-jdk \
+    default-jdk-headless \
     unzip \
     libsecret-1-0 \
     lsof \
@@ -66,7 +66,8 @@ RUN curl -sSL https://dot.net/v1/dotnet-install.sh -o dotnet-install.sh \
 ENV DOTNET_ROOT=/usr/share/dotnet
 RUN dotnet tool install --tool-path /usr/share/powershell PowerShell \
     && chmod -R a+rX /usr/share/powershell \
-    && ln -s /usr/share/powershell/pwsh /usr/bin/pwsh
+    && ln -s /usr/share/powershell/pwsh /usr/bin/pwsh \
+    && rm -rf /root/.nuget /root/.templateengine /root/.dotnet /tmp/*
 
 # Install Node.js 22 & npm (NodeSource detects architecture automatically)
 RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
@@ -75,10 +76,12 @@ RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
 
 # Install pnpm, OpenCode V2 CLI, and Playwright CLI globally
 # (UPDATED: changed 'opencode-ai' to '@opencode/cli' for V2)
-RUN npm install -g pnpm @opencode/cli playwright
+RUN npm install -g pnpm @opencode/cli playwright \
+    && npm cache clean --force
 
 # Install system dependencies for Playwright browsers
-RUN npx playwright install-deps
+RUN npx playwright install-deps chromium \
+    && rm -rf /var/lib/apt/lists/*
 
 # Pre-download Chromium browser binary into the image (Playwright selects native arm64/amd64)
 ENV PLAYWRIGHT_BROWSERS_PATH=/opt/ms-playwright
@@ -138,7 +141,7 @@ USER dev
 
 # Accept Android SDK licenses and install platform tools and build tools
 RUN yes | sdkmanager --sdk_root=${ANDROID_HOME} --licenses \
-    && sdkmanager --sdk_root=${ANDROID_HOME} "platform-tools" "platforms;android-36" "build-tools;36.0.0"
+    && sdkmanager --sdk_root=${ANDROID_HOME} "platform-tools" "platforms;android-36" "build-tools;36.0.0" "ndk;27.1.12297006"
 
 # Create base git config files pointing to the custom credentials file
 RUN printf "[credential]\n\thelper = store --file=/home/dev/.config/git/.git-credentials\n" > /home/dev/.config/git/.gitconfig && \
