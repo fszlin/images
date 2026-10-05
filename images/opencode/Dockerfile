@@ -151,11 +151,13 @@ RUN yes | sdkmanager --sdk_root=${ANDROID_HOME} --licenses \
     && sdkmanager --sdk_root=${ANDROID_HOME} "platform-tools" "platforms;android-36" "build-tools;36.0.0" "ndk;27.1.12297006"
 
 # Install Android emulator and system image, create AVD "dc" with GPU acceleration enabled
-RUN ABI=$([ "${TARGETARCH}" = "arm64" ] && echo arm64-v8a || echo x86_64) \
-    && sdkmanager --sdk_root=${ANDROID_HOME} "emulator" "system-images;android-36;google_apis;${ABI}" \
-    && echo "no" | avdmanager create avd -n dc -k "system-images;android-36;google_apis;${ABI}" --device "pixel" \
-    && echo "hw.gpu.enabled=yes" >> /home/dev/.android/avd/dc.avd/config.ini \
-    && echo "hw.gpu.mode=auto" >> /home/dev/.android/avd/dc.avd/config.ini
+# (Google publishes no Linux arm64 emulator, so this is skipped on arm64)
+RUN if [ "${TARGETARCH}" = "amd64" ]; then \
+        sdkmanager --sdk_root=${ANDROID_HOME} "emulator" "system-images;android-36;google_apis;x86_64" \
+        && echo "no" | avdmanager create avd -n dc -k "system-images;android-36;google_apis;x86_64" --device "pixel" \
+        && echo "hw.gpu.enabled=yes" >> /home/dev/.android/avd/dc.avd/config.ini \
+        && echo "hw.gpu.mode=auto" >> /home/dev/.android/avd/dc.avd/config.ini; \
+    fi
 ENV PATH="${PATH}:${ANDROID_HOME}/emulator"
 
 # Create base git config files pointing to the custom credentials file
