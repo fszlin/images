@@ -38,6 +38,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     nftables \
     xclip \
     xsel \
+    libgl1 \
+    libglu1-mesa \
+    libegl1 \
+    libvulkan1 \
+    mesa-vulkan-drivers \
+    libnss3 \
+    libpulse0 \
     # Setup GitHub CLI keyring and repository with dynamic architecture lookup
     && mkdir -p -m 755 /etc/apt/keyrings \
     && curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null \
@@ -142,6 +149,14 @@ USER dev
 # Accept Android SDK licenses and install platform tools and build tools
 RUN yes | sdkmanager --sdk_root=${ANDROID_HOME} --licenses \
     && sdkmanager --sdk_root=${ANDROID_HOME} "platform-tools" "platforms;android-36" "build-tools;36.0.0" "ndk;27.1.12297006"
+
+# Install Android emulator and system image, create AVD "dc" with GPU acceleration enabled
+RUN ABI=$([ "${TARGETARCH}" = "arm64" ] && echo arm64-v8a || echo x86_64) \
+    && sdkmanager --sdk_root=${ANDROID_HOME} "emulator" "system-images;android-36;google_apis;${ABI}" \
+    && echo "no" | avdmanager create avd -n dc -k "system-images;android-36;google_apis;${ABI}" --device "pixel" \
+    && echo "hw.gpu.enabled=yes" >> /home/dev/.android/avd/dc.avd/config.ini \
+    && echo "hw.gpu.mode=auto" >> /home/dev/.android/avd/dc.avd/config.ini
+ENV PATH="${PATH}:${ANDROID_HOME}/emulator"
 
 # Create base git config files pointing to the custom credentials file
 RUN printf "[credential]\n\thelper = store --file=/home/dev/.config/git/.git-credentials\n" > /home/dev/.config/git/.gitconfig && \
