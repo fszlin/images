@@ -41,8 +41,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libgl1 \
     libglu1-mesa \
     libegl1 \
-    libvulkan1 \
-    mesa-vulkan-drivers \
     libnss3 \
     libpulse0 \
     # Setup GitHub CLI keyring and repository with dynamic architecture lookup
@@ -150,13 +148,11 @@ USER dev
 RUN yes | sdkmanager --sdk_root=${ANDROID_HOME} --licenses \
     && sdkmanager --sdk_root=${ANDROID_HOME} "platform-tools" "platforms;android-36" "build-tools;36.0.0" "ndk;27.1.12297006"
 
-# Install Android emulator and system image, create AVD "dc" with GPU acceleration enabled
+# Install Android emulator and system image, create AVD "dc"
 # (Google publishes no Linux arm64 emulator, so this is skipped on arm64)
 RUN if [ "${TARGETARCH}" = "amd64" ]; then \
         sdkmanager --sdk_root=${ANDROID_HOME} "emulator" "system-images;android-36;google_apis;x86_64" \
-        && echo "no" | avdmanager create avd -n dc -k "system-images;android-36;google_apis;x86_64" --device "pixel" \
-        && echo "hw.gpu.enabled=yes" >> /home/dev/.android/avd/dc.avd/config.ini \
-        && echo "hw.gpu.mode=auto" >> /home/dev/.android/avd/dc.avd/config.ini; \
+        && echo "no" | avdmanager create avd -n dc -k "system-images;android-36;google_apis;x86_64" --device "pixel"; \
     fi
 ENV PATH="${PATH}:${ANDROID_HOME}/emulator"
 
