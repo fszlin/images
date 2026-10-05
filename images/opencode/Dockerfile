@@ -74,9 +74,9 @@ RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
     && apt-get install -y --no-install-recommends nodejs \
     && rm -rf /var/lib/apt/lists/*
 
-# Install pnpm, OpenCode V2 CLI, and Playwright CLI globally
+# Install pnpm, Bun, OpenCode V2 CLI, and Playwright CLI globally
 # (UPDATED: changed 'opencode-ai' to '@opencode/cli' for V2)
-RUN npm install -g pnpm @opencode/cli playwright \
+RUN npm install -g pnpm bun @opencode/cli playwright \
     && npm cache clean --force
 
 # Install system dependencies for Playwright browsers
