@@ -100,7 +100,7 @@ RUN mkdir -p /repos /home/dev/android-sdk && \
     groupadd -g ${GROUP_ID} dev && \
     useradd -l -u ${USER_ID} -g dev -m -s /bin/bash dev && \
     echo "dev ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers && \
-    chown -R dev:dev /repos /home/dev/android-sdk
+    chown -R dev:dev /repos /home/dev/android-sdk /opt/ms-playwright
 
 # Configure subuid and subgid for rootless podman inside the container for user dev (1000)
 RUN echo "dev:100000:65536" > /etc/subuid && \
