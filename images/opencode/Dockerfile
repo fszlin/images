@@ -132,10 +132,11 @@ RUN mkdir -p /home/dev/.config/opencode \
              /home/dev/.config/gh \
              /home/dev/.local/share/containers \
              /home/dev/.config/containers \
+             /tmp/opencode \
     # Pre-configure Podman engine defaults: cgroupfs manager with disabled container cgroups
     && printf '[engine]\ncgroup_manager = "cgroupfs"\nevents_logger = "file"\n[containers]\nnetns = "pasta"\ncgroups = "disabled"\n' > /home/dev/.config/containers/containers.conf \
     && printf '[storage]\ndriver = "overlay"\n[storage.options.overlay]\nmount_program = "/usr/bin/fuse-overlayfs"\n' > /home/dev/.config/containers/storage.conf \
-    && chown -R dev:dev /home/dev
+    && chown -R dev:dev /home/dev /tmp/opencode
 
 # Set up docker executable symlink and shell alias to route docker commands to podman
 RUN ln -s /usr/bin/podman /usr/local/bin/docker && \
