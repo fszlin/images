@@ -54,6 +54,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/* \
     && ln -s /usr/bin/fdfind /usr/bin/fd
 
+# Install Azure CLI for amd64/arm64 from Microsoft's signed repository.
+# Bookworm is Microsoft's documented fallback for newer Debian releases.
+RUN curl -fsSL https://packages.microsoft.com/keys/microsoft.asc -o /etc/apt/keyrings/microsoft.asc \
+    && chmod go+r /etc/apt/keyrings/microsoft.asc \
+    && echo "deb [arch=${TARGETARCH} signed-by=/etc/apt/keyrings/microsoft.asc] https://packages.microsoft.com/repos/azure-cli/ bookworm main" > /etc/apt/sources.list.d/azure-cli.list \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends azure-cli \
+    && rm -rf /var/lib/apt/lists/*
+
 # Set environment variable to enable full ICU globalization support
 ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=0
 
