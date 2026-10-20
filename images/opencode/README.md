@@ -1,6 +1,6 @@
 # opencode
 
-Node-based image with the [opencode](https://opencode.ai) CLI.
+Node-based image with the [opencode](https://opencode.ai) CLI and Azure CLI (`az`).
 
     docker build -t opencode images/opencode
     docker run --rm -it -v "$PWD":/workspace opencode
