@@ -46,7 +46,7 @@ RUN echo "no" | avdmanager create avd -n ci_avd \
     --device "pixel"
 
 # Install Maestro CLI
-ARG MAESTRO_VERSION=2.11.0
+ARG MAESTRO_VERSION=2.12.1
 RUN curl -Ls "https://get.maestro.mobile.dev" | MAESTRO_VERSION=${MAESTRO_VERSION} bash
 ENV PATH="${PATH}:/root/.maestro/bin"
 

@@ -6,3 +6,6 @@ updates:
   - package-ecosystem: docker
     directory: /images/opencode
     schedule: { interval: weekly }
+  - package-ecosystem: docker
+    directory: /images/devops-agent
+    schedule: { interval: weekly }
