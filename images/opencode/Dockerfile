@@ -77,8 +77,10 @@ RUN curl -sSL https://dot.net/v1/dotnet-install.sh -o dotnet-install.sh \
     && rm dotnet-install.sh
 
 # Install PowerShell in a shared directory accessible to dev
+# Pin the last verified release; 7.7.0 is missing its Linux package on NuGet.
+ARG POWERSHELL_VERSION=7.6.9
 ENV DOTNET_ROOT=/usr/share/dotnet
-RUN dotnet tool install --tool-path /usr/share/powershell PowerShell \
+RUN dotnet tool install --tool-path /usr/share/powershell PowerShell --version ${POWERSHELL_VERSION} \
     && chmod -R a+rX /usr/share/powershell \
     && ln -s /usr/share/powershell/pwsh /usr/bin/pwsh \
     && rm -rf /root/.nuget /root/.templateengine /root/.dotnet /tmp/*
