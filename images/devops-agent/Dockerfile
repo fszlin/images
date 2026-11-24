@@ -35,8 +35,8 @@ RUN yes | sdkmanager --licenses
 RUN sdkmanager \
     "platform-tools" \
     "emulator" \
-    "platforms;android-36" \
-    "build-tools;36.0.0" \
+    "platforms;android-37.0" \
+    "build-tools;37.0.0" \
     "ndk;27.1.12297006" \
     "system-images;android-36;google_apis;x86_64"
 

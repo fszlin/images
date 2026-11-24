@@ -158,7 +158,7 @@ USER dev
 
 # Accept Android SDK licenses and install platform tools and build tools
 RUN yes | sdkmanager --sdk_root=${ANDROID_HOME} --licenses \
-    && sdkmanager --sdk_root=${ANDROID_HOME} "platform-tools" "platforms;android-36" "build-tools;36.0.0" "ndk;27.1.12297006"
+    && sdkmanager --sdk_root=${ANDROID_HOME} "platform-tools" "platforms;android-37.0" "build-tools;37.0.0" "ndk;27.1.12297006"
 
 # Install Android emulator and system image, create AVD "dc"
 # (Google publishes no Linux arm64 emulator, so this is skipped on arm64)
