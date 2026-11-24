@@ -1,4 +1,4 @@
-FROM ubuntu:24.04
+FROM ubuntu:26.04
 
 # for build azure agent download uri
 ENV TARGETARCH="linux-x64"
